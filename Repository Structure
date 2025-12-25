@@ -1,0 +1,24 @@
+stackpay/
+├── README.md
+├── package.json
+├── next.config.js
+├── tailwind.config.js
+├── postcss.config.js
+├── app/
+│   ├── layout.jsx
+│   ├── page.jsx
+│   ├── globals.css
+│   └── dashboard/
+│       └── page.jsx
+├── components/
+│   ├── ConnectWallet.jsx
+│   ├── CreateStream.jsx
+│   ├── Withdraw.jsx
+│   └── StreamCard.jsx
+├── lib/
+│   ├── stacks.js
+│   └── contract.js
+├── contracts/
+│   └── stackpay.clar
+└── public/
+    └── logo.png
