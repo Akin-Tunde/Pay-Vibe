@@ -109,7 +109,7 @@ All state transitions are recorded on-chain and can be indexed by external servi
 
 ---
 
-## Project Structure
+## Project Structur
 
 
 ---
