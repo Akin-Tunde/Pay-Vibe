@@ -1,4 +1,4 @@
-# Pay-Vibe — Decentralized Payroll & Real-Time Salary Streaming on Stacks
+# Pay-Vibe — Decentralized Payroll & Real-Time Salary Streaming on Stack
 
 **Pay-Vibe** is a decentralized payroll and salary streaming platform built on the Stacks blockchain.  
 It enables companies, DAOs, and independent founders to pay contributors continuously using block-based salary accrual, with secure wallet-based authentication.
