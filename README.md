@@ -118,6 +118,4 @@ All state transitions are recorded on-chain and can be indexed by external servi
 
 Install dependencies and start the development server:
 
-```bash
-npm install
-npm run dev
+
