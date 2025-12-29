@@ -41,6 +41,10 @@ export function ToastProvider({ children }) {
   );
 }
 
+ToastProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 export function useToast() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("useToast must be used within ToastProvider");

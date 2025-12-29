@@ -50,3 +50,14 @@ export default function StreamCard({ stream }) {
     </div>
   );
 }
+
+StreamCard.propTypes = {
+  stream: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    employer: PropTypes.string,
+    employee: PropTypes.string,
+    ratePerBlock: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    balance: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    active: PropTypes.bool,
+  }).isRequired,
+};
