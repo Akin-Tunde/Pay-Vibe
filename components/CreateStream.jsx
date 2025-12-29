@@ -5,22 +5,103 @@ import { uintCV, standardPrincipalCV } from "@stacks/transactions";
 import { contractAddress, contractName } from "../lib/contract";
 
 export default function CreateStream() {
-  async function create() {
-    await openContractCall({
-      contractAddress,
-      contractName,
-      functionName: "create-stream",
-      functionArgs: [
-        standardPrincipalCV("STEMPLOYEEADDRESS"),
-        uintCV(10),
-        uintCV(1000000),
-      ],
-    });
+  const [employee, setEmployee] = useState("");
+  const [rate, setRate] = useState("");
+  const [fund, setFund] = useState("");
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  const validate = () => {
+    const e = {};
+    if (!employee) e.employee = "Employee address is required";
+    if (!rate || Number(rate) <= 0) e.rate = "Rate per block must be a positive number";
+    if (!fund || Number(fund) <= 0) e.fund = "Fund amount must be a positive number";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  async function create(e) {
+    e?.preventDefault?.();
+    setMessage(null);
+    if (!validate()) return;
+    setSubmitting(true);
+    try {
+      await openContractCall({
+        contractAddress,
+        contractName,
+        functionName: "create-stream",
+        functionArgs: [
+          standardPrincipalCV(employee),
+          uintCV(Number(rate)),
+          uintCV(Number(fund)),
+        ],
+      });
+      setMessage({ type: "success", text: "Stream created successfully." });
+      setEmployee("");
+      setRate("");
+      setFund("");
+    } catch (err) {
+      console.error("Create stream error", err);
+      setMessage({ type: "error", text: "Failed to create stream. See console for details." });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <button onClick={create} className="mt-4 bg-green-600 px-4 py-2 rounded">
-      Create Stream
-    </button>
+    <form onSubmit={create} className="mt-4 space-y-2 max-w-md">
+      <div>
+        <label className="block text-sm font-medium">Employee STX Address</label>
+        <input
+          value={employee}
+          onChange={(e) => setEmployee(e.target.value)}
+          className="mt-1 block w-full rounded border px-3 py-2"
+          placeholder="SP..."
+        />
+        {errors.employee && <p className="text-red-500 text-sm mt-1">{errors.employee}</p>}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Rate per Block</label>
+        <input
+          type="number"
+          min="1"
+          value={rate}
+          onChange={(e) => setRate(e.target.value)}
+          className="mt-1 block w-full rounded border px-3 py-2"
+          placeholder="e.g., 10"
+        />
+        {errors.rate && <p className="text-red-500 text-sm mt-1">{errors.rate}</p>}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Initial Fund (uSTX)</label>
+        <input
+          type="number"
+          min="1"
+          value={fund}
+          onChange={(e) => setFund(e.target.value)}
+          className="mt-1 block w-full rounded border px-3 py-2"
+          placeholder="e.g., 1000000"
+        />
+        {errors.fund && <p className="text-red-500 text-sm mt-1">{errors.fund}</p>}
+      </div>
+
+      <div>
+        <button
+          disabled={submitting}
+          className={`mt-2 px-4 py-2 rounded bg-green-600 text-white ${submitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`}
+        >
+          {submitting ? 'Creating...' : 'Create Stream'}
+        </button>
+      </div>
+
+      {message && (
+        <p className={`mt-2 text-sm ${message.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+          {message.text}
+        </p>
+      )}
+    </form>
   );
 }
