@@ -8,8 +8,9 @@ import { useToast } from "../../components/Toast";
 
 export default function Dashboard() {
   const [streams, setStreams] = useState([]);
-
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const addToast = useToast();
 
   useEffect(() => {
     const getStreams = async () => {
@@ -18,8 +19,8 @@ export default function Dashboard() {
         const data = await fetchStreams();
         setStreams(data);
       } catch (err) {
-        // show toast on error
-        addToast({ message: `Failed to load streams: ${err.message}`, type: "error" });
+        setError(err.message || "Failed to load streams");
+        addToast({ message: "Failed to load streams", type: "error" });
       } finally {
         setLoading(false);
       }
@@ -38,6 +39,26 @@ export default function Dashboard() {
       <div className="mt-6">
         {loading ? (
           <p>Loading streams...</p>
+        ) : error ? (
+          <div>
+            <p className="text-red-400">Error: {error}</p>
+            <button
+              className="mt-2 px-3 py-1 bg-blue-600 text-white rounded"
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+                fetchStreams()
+                  .then((data) => setStreams(data))
+                  .catch((err) => {
+                    setError(err.message || "Failed to fetch streams");
+                    addToast({ message: "Failed to load streams", type: "error" });
+                  })
+                  .finally(() => setLoading(false));
+              }}
+            >
+              Retry
+            </button>
+          </div>
         ) : streams.length === 0 ? (
           <p>No active streams yet</p>
         ) : (
