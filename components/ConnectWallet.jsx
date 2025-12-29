@@ -41,10 +41,16 @@ export default function ConnectWallet() {
     }
   };
 
-  const handleDisconnect = () => {
-    disconnect();
-    setAddress(null);
-    window.location.reload(); 
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+    } catch (err) {
+      console.error("Disconnect error:", err);
+      addToast({ message: "Error disconnecting", type: "error" });
+    } finally {
+      setAddress(null);
+      addToast({ message: "Disconnected", type: "success" });
+    }
   };
 
   if (!mounted) return null;
