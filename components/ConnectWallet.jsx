@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { connect, disconnect, isConnected, getLocalStorage } from "@stacks/connect";
+import { useToast } from "./Toast";
 
 export default function ConnectWallet() {
   const [mounted, setMounted] = useState(false);
@@ -15,11 +16,14 @@ export default function ConnectWallet() {
     }
   }, []);
 
+  const addToast = useToast();
+
   const handleConnect = async () => {
     try {
       const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
       if (!projectId) {
         console.error("Missing NEXT_PUBLIC_WC_PROJECT_ID");
+        addToast({ message: "Missing WalletConnect project ID", type: "error" });
         return;
       }
 
@@ -32,8 +36,8 @@ export default function ConnectWallet() {
       const stxAddress = response?.addresses?.stx?.[0]?.address;
       setAddress(stxAddress);
     } catch (error) {
-      // If the button is clicked and nothing happens, check this console log
       console.error("Connection Error:", error);
+      addToast({ message: "Connection failed. See console for details.", type: "error" });
     }
   };
 

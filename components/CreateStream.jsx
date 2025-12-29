@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { openContractCall } from "@stacks/connect";
 import { uintCV, standardPrincipalCV } from "@stacks/transactions";
 import { contractAddress, contractName } from "../lib/contract";
+import { useToast } from "./Toast";
 
 export default function CreateStream() {
   const [employee, setEmployee] = useState("");
@@ -10,7 +12,7 @@ export default function CreateStream() {
   const [fund, setFund] = useState("");
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState(null);
+  const addToast = useToast();
 
   const validate = () => {
     const e = {};
@@ -23,7 +25,6 @@ export default function CreateStream() {
 
   async function create(e) {
     e?.preventDefault?.();
-    setMessage(null);
     if (!validate()) return;
     setSubmitting(true);
     try {
@@ -37,13 +38,13 @@ export default function CreateStream() {
           uintCV(Number(fund)),
         ],
       });
-      setMessage({ type: "success", text: "Stream created successfully." });
+      addToast({ message: "Stream created successfully.", type: "success" });
       setEmployee("");
       setRate("");
       setFund("");
     } catch (err) {
       console.error("Create stream error", err);
-      setMessage({ type: "error", text: "Failed to create stream. See console for details." });
+      addToast({ message: "Failed to create stream. See console for details.", type: "error" });
     } finally {
       setSubmitting(false);
     }
@@ -97,11 +98,7 @@ export default function CreateStream() {
         </button>
       </div>
 
-      {message && (
-        <p className={`mt-2 text-sm ${message.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
-          {message.text}
-        </p>
-      )}
+
     </form>
   );
 }

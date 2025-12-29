@@ -5,10 +5,14 @@ export const metadata = {
   description: "Decentralized payroll on Stacks",
 };
 
+import { ToastProvider } from "../components/Toast";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

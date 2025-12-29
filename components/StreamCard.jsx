@@ -4,9 +4,12 @@ import { useState } from "react";
 import { openContractCall } from "@stacks/connect";
 import { uintCV } from "@stacks/transactions";
 import { contractAddress, contractName } from "../lib/contract";
+import { useToast } from "./Toast";
 
 export default function StreamCard({ stream }) {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+
+  const addToast = useToast();
 
   const handleWithdraw = async () => {
     setIsWithdrawing(true);
@@ -17,10 +20,10 @@ export default function StreamCard({ stream }) {
         functionName: "withdraw",
         functionArgs: [uintCV(stream.id)],
       });
-      alert("Withdrawal successful!");
+      addToast({ message: "Withdrawal successful!", type: "success" });
     } catch (err) {
       console.error(err);
-      alert("Withdrawal failed");
+      addToast({ message: "Withdrawal failed", type: "error" });
     }
     setIsWithdrawing(false);
   };
